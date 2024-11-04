@@ -1,0 +1,86 @@
+# This is a workflow for the Fazenda On project
+
+name: Fazenda On CI
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events for the "main" branch
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# Define the jobs for the workflow
+jobs:
+  # Job for building and testing the application
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps for this job
+    steps:
+      # Check out the repository
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Set up Java for backend if using Java
+      - name: Set up JDK 11
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'adopt'
+
+      # Install dependencies for backend (e.g., if using Maven or Gradle)
+      - name: Build backend
+        run: |
+          ./mvnw clean install
+
+      # Run backend tests
+      - name: Run backend tests
+        run: |
+          ./mvnw test
+
+      # Set up Python if you have a Python backend or scripts
+      - name: Set up Python 3.x
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      # Install dependencies for Python (adjust command if you use requirements.txt)
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      # Run Python tests
+      - name: Run Python tests
+        run: |
+          pytest
+
+      # Set up Node.js for frontend if applicable
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      # Install dependencies for frontend
+      - name: Install frontend dependencies
+        run: |
+          npm install
+
+      # Run frontend build
+      - name: Build frontend
+        run: |
+          npm run build
+
+      # Run frontend tests
+      - name: Run frontend tests
+        run: |
+          npm test
+
+      # Additional commands to deploy or lint can be added here
+      - name: Finalize build
+        run: |
+          echo Build and tests for Fazenda On completed successfully.
